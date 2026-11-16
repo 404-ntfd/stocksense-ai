@@ -1,0 +1,147 @@
+name: Android APK
+
+on:
+  push:
+    branches: [main, 'claude/**']
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Publish a GitHub Release under this tag (e.g. v1.0.0). Leave empty to build only.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-${{ github.ref }}-${{ inputs.release_tag }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      RELEASE_TAG_INPUT: ${{ inputs.release_tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Resolve version
+        id: ver
+        run: |
+          TAG=""
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then TAG="$GITHUB_REF_NAME"; fi
+          if [[ -z "$TAG" && "$RELEASE_TAG_INPUT" =~ ^v[0-9A-Za-z._-]+$ ]]; then TAG="$RELEASE_TAG_INPUT"; fi
+          NAME="${TAG#v}"
+          if [[ -z "$NAME" ]]; then NAME="$(node -p "require('./package.json').version")-dev.$GITHUB_RUN_NUMBER"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "Building version $NAME (release tag: ${TAG:-none})"
+
+      - run: npm ci
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Web build
+        run: npm run build
+        env:
+          APP_VERSION: ${{ steps.ver.outputs.name }}
+
+      - run: npx cap sync android
+
+      - name: Prepare signing key
+        id: sign
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          KS="$RUNNER_TEMP/release.jks"
+          if [[ -n "$ANDROID_KEYSTORE_B64" ]]; then
+            echo "$ANDROID_KEYSTORE_B64" | base64 -d > "$KS"
+            echo "mode=release-key" >> "$GITHUB_OUTPUT"
+            { echo "KS_PASS=$ANDROID_KEYSTORE_PASSWORD"; echo "KEY_ALIAS=$ANDROID_KEY_ALIAS"; echo "KEY_PASS=${ANDROID_KEY_PASSWORD:-$ANDROID_KEYSTORE_PASSWORD}"; } >> "$GITHUB_ENV"
+          else
+            # The four ANDROID_* secrets are not set yet, so sign with a throwaway key generated for this run.
+            # The APK installs normally, but a later build signed with the real key cannot update it in place.
+            PW="$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 24)"
+            echo "::add-mask::$PW"
+            keytool -genkeypair -keystore "$KS" -storetype JKS -alias stocksense -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$PW" -keypass "$PW" -dname "CN=StockSense AI (temporary CI key), O=StockSense, C=IN"
+            echo "mode=temporary-ci-key" >> "$GITHUB_OUTPUT"
+            { echo "KS_PASS=$PW"; echo "KEY_ALIAS=stocksense"; echo "KEY_PASS=$PW"; } >> "$GITHUB_ENV"
+            echo "::warning::ANDROID_KEYSTORE_* secrets are not set. This APK is signed with a temporary key."
+          fi
+          echo "KS_FILE=$KS" >> "$GITHUB_ENV"
+
+      - name: Build APKs
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease assembleDebug --no-daemon \
+            -PappVersionCode="$GITHUB_RUN_NUMBER" -PappVersionName="${{ steps.ver.outputs.name }}" \
+            -Pandroid.injected.signing.store.file="$KS_FILE" \
+            -Pandroid.injected.signing.store.password="$KS_PASS" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASS"
+
+      - name: Verify APK (signature, SDK levels, size)
+        id: verify
+        run: |
+          BT="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          SRC="$(ls android/app/build/outputs/apk/release/*.apk | head -1)"
+          OUT="StockSense-AI-v${{ steps.ver.outputs.name }}.apk"
+          cp "$SRC" "$OUT"
+          cp "$(ls android/app/build/outputs/apk/debug/*.apk | head -1)" "StockSense-AI-v${{ steps.ver.outputs.name }}-debug.apk"
+          "$BT/apksigner" verify --verbose --print-certs "$OUT" | tee apk-verify.txt | grep -E "Verifies|scheme|certificate DN|SHA-256"
+          "$BT/aapt2" dump badging "$OUT" | grep -E "^package|^sdkVersion|^targetSdkVersion|uses-permission:" | tee -a apk-verify.txt
+          grep -q "^Verifies" apk-verify.txt
+          grep -q "sdkVersion:'24'" apk-verify.txt
+          grep -q "targetSdkVersion:'36'" apk-verify.txt
+          SIZE=$(stat -c %s "$OUT"); echo "APK size: $SIZE bytes" | tee -a apk-verify.txt
+          test "$SIZE" -lt 31457280
+          echo "Signing: ${{ steps.sign.outputs.mode }}" | tee -a apk-verify.txt
+          { echo "### StockSense AI ${{ steps.ver.outputs.name }}"; echo '```'; cat apk-verify.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          echo "apk=$OUT" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stocksense-apk
+          path: |
+            StockSense-AI-*.apk
+            apk-verify.txt
+
+      - name: Zip web build
+        if: steps.ver.outputs.tag != ''
+        run: cd dist && zip -qr "../StockSense-AI-web-v${{ steps.ver.outputs.name }}.zip" .
+
+      - name: Publish GitHub Release
+        if: steps.ver.outputs.tag != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: StockSense AI ${{ steps.ver.outputs.tag }}
+          prerelease: ${{ contains(steps.ver.outputs.tag, '-') }}
+          body: |
+            **Install on Android:** download `${{ steps.verify.outputs.apk }}` below, tap it, allow "Install unknown apps", and choose "Install anyway" if Play Protect asks.
+            **Run on Windows:** open the web app (see README) in Chrome or Edge, or unzip the web build and serve it with any static server.
+
+            Signing: `${{ steps.sign.outputs.mode }}` · versionCode `${{ github.run_number }}` · commit `${{ github.sha }}`
+
+            See `docs/PRODUCT_DOCUMENT.md` for the full guide and `docs/TEST_REPORT.md` for test results.
+          files: |
+            StockSense-AI-v${{ steps.ver.outputs.name }}.apk
+            StockSense-AI-web-v${{ steps.ver.outputs.name }}.zip
+            apk-verify.txt

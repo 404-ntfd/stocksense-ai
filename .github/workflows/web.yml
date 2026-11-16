@@ -1,0 +1,55 @@
+name: Web (tests + GitHub Pages)
+
+on:
+  push:
+    branches: [main, 'claude/**']
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run lint
+
+      - name: Unit + integration tests
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests (Pixel 7 viewport)
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-results, path: test-results, if-no-files-found: ignore }
+
+      # The Windows / PWA fallback. Publishes dist/ to the gh-pages branch; in the repository settings
+      # choose Pages -> "Deploy from a branch" -> gh-pages / (root) once, and the site stays up to date.
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          force_orphan: true
+          enable_jekyll: false
+          commit_message: 'Deploy web build'

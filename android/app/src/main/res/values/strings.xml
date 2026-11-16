@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">StockSense AI</string>
+    <string name="title_activity_main">StockSense AI</string>
+    <string name="package_name">in.stocksense.app</string>
+    <string name="custom_url_scheme">in.stocksense.app</string>
+</resources>
