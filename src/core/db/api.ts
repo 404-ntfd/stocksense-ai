@@ -103,7 +103,7 @@ export function buildApi(e: DbEngine) {
     dashboard: (key: PeriodKey, today?: string) => dashboard(e, key, today),
     insights: (today?: string) => insights(e, today),
     periodTotals: (from: string, to: string) => periodTotals(e, from, to),
-    forecastInput: (today?: string) => forecastInput(e, today),
+    forecastInput: (today?: string, productId?: number | null) => forecastInput(e, today, productId),
     saveForecasts: (results: ForecastResult[], today?: string) => saveForecasts(e, results, today),
     forecastState: (today?: string) => forecastState(e, today),
     forecastRows: (where?: string, params?: unknown[]) => forecastRows(e, where, params),

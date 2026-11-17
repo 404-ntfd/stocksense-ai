@@ -163,13 +163,13 @@ export function insights(e: DbEngine, today: string = todayISO()): InsightsData 
 }
 
 // ---------- forecast plumbing (the maths lives in forecast.ts and runs in the analytics worker) ----------
-export function forecastInput(e: DbEngine, today: string = todayISO()): ForecastInput {
+export function forecastInput(e: DbEngine, today: string = todayISO(), productId?: number | null): ForecastInput {
   const meta = new Map(e.all<{ id: number; stock: number; lead: number }>(
     'SELECT p.id, st.on_hand AS stock, p.lead_time_days AS lead FROM products p JOIN _v_stock st ON st.product_id = p.id WHERE p.is_active = 1').map((m) => [m.id, m]));
   const products: ForecastInput['products'] = [];
   let cur: ForecastInput['products'][number] | null = null;
   let firstDay = '';
-  for (const r of e.all<{ pid: number; d: string; q: number }>('SELECT product_id AS pid, sale_date AS d, SUM(qty) AS q FROM sales WHERE sale_date <= ? GROUP BY product_id, sale_date ORDER BY product_id, sale_date', [today])) {
+  for (const r of e.all<{ pid: number; d: string; q: number }>(`SELECT product_id AS pid, sale_date AS d, SUM(qty) AS q FROM sales WHERE sale_date <= ?${productId ? ' AND product_id = ?' : ''} GROUP BY product_id, sale_date ORDER BY product_id, sale_date`, productId ? [today, productId] : [today])) {
     const m = meta.get(r.pid);
     if (!m) continue;
     if (!cur || cur.id !== r.pid) {

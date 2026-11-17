@@ -7,6 +7,9 @@ interface AppState {
   dbError: string | null;
   /** Bumped after every data change so screens know to re-query. */
   dataVersion: number;
+  /** Bumped when fresh forecasts were saved (insights and the reorder list re-read). */
+  forecastVersion: number;
+  bumpForecast: () => void;
   online: boolean;
   toasts: Toast[];
   setDbReady: (ok: boolean, err?: string | null) => void;
@@ -21,6 +24,8 @@ export const useApp = create<AppState>((set, get) => ({
   dbReady: false,
   dbError: null,
   dataVersion: 0,
+  forecastVersion: 0,
+  bumpForecast: () => set({ forecastVersion: get().forecastVersion + 1 }),
   online: typeof navigator === 'undefined' ? true : navigator.onLine !== false,
   toasts: [],
   setDbReady: (ok, err = null) => set({ dbReady: ok, dbError: err }),
