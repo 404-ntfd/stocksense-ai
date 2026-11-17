@@ -80,8 +80,10 @@ export function barChart(t: ChartTheme, labels: string[], values: number[], kind
   const horizontal = !!opts.horizontal;
   const cat = { ...categoryAxis(t, horizontal ? [...labels].reverse() : labels), axisLabel: { color: horizontal ? t.ink : t.muted, fontSize: horizontal ? 12 : 11, hideOverlap: !horizontal, width: horizontal ? 132 : undefined, overflow: 'truncate', formatter: fmtX } };
   const data = (horizontal ? [...values].reverse() : values).map((v, i) => ({ value: v, itemStyle: { color: opts.colors ? (horizontal ? [...opts.colors].reverse() : opts.colors)[i] : t.accent, borderRadius: horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0] } }));
+  const base = common(t, false) as { grid: Record<string, unknown> };
   return {
-    ...common(t, false),
+    ...base,
+    grid: { ...base.grid, right: horizontal ? 58 : 14 }, // room for the value label at the end of the longest bar
     tooltip: tooltip(t, kind),
     xAxis: horizontal ? valueAxis(t, kind) : cat,
     yAxis: horizontal ? cat : valueAxis(t, kind),

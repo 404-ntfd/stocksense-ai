@@ -164,6 +164,15 @@ const RULES: Rule[] = [
   }) },
   { id: 'margin_by_category', re: /\b(margins?|profitability|profit) (?:by|per|for each|across|of each) categor(?:y|ies)|category[- ]wise (?:margin|profit)|which categor(?:y|ies) (?:is|are|has|have|gives?|makes?) (?:the )?(?:most|more|best|highest) (?:profit|margin|profitable)/, build: (_m, t, ctx, period) => {
     const p = period ?? defaultPeriod(ctx, 'last 30 days');
+    if (/\bwhich categor(?:y|ies)\b/.test(t) && !/\bmargin\b/.test(t)) { // "which category is most profitable" = most gross profit
+      return { used: ['which', 'category', 'categories', 'most', 'more', 'best', 'highest', 'profit', 'profitable', 'gives', 'makes', 'has', 'have', 'is', 'are'], match: {
+        id: 'margin_by_category', title: `Most profitable category, ${p.label}`,
+        sql: `SELECT category, ROUND(SUM(gross_profit), 2) AS gross_profit, ROUND(SUM(revenue), 2) AS revenue, ROUND(100.0 * SUM(gross_profit) / NULLIF(SUM(revenue), 0), 2) AS margin_pct FROM v_sales WHERE ${between('sale_date', p)} GROUP BY category ORDER BY gross_profit DESC LIMIT 1`,
+        chart: { type: 'kpi', x: 'category', y: ['gross_profit', 'margin_pct'] }, assumptions: [period ? '' : 'No period given, so I used the last 30 days', 'Most profitable = highest gross profit in rupees'].filter(Boolean),
+        say: (rows) => (rows.length ? `${rows[0].category} made the most gross profit in ${p.label}: ${formatINR(num(rows[0].gross_profit))} at a ${formatPct(num(rows[0].margin_pct))} margin.` : `There are no sales for ${p.label}.`),
+        followups: ['Margin by category', 'Sales by category this month'],
+      } };
+    }
     return { used: ['margin', 'margins', 'profitability', 'profit', 'profitable', 'category', 'categories', 'wise', 'category-wise', 'most', 'more', 'best', 'highest', 'gives', 'makes', 'gross', 'each', 'across'], match: {
       id: 'margin_by_category', title: `Margin by category, ${p.label}`,
       sql: `SELECT category, ROUND(SUM(revenue), 2) AS revenue, ROUND(SUM(gross_profit), 2) AS gross_profit, ROUND(100.0 * SUM(gross_profit) / NULLIF(SUM(revenue), 0), 2) AS margin_pct FROM v_sales WHERE ${between('sale_date', p)} GROUP BY category ORDER BY margin_pct DESC`,
