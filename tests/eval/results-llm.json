@@ -1,0 +1,705 @@
+{
+  "summary": {
+    "mode": "llm",
+    "date": "2026-11-17",
+    "model": "openai/gpt-oss-120b",
+    "total": 60,
+    "passed": 59,
+    "scorePct": 98.3,
+    "byCategory": {
+      "totals": {
+        "pass": 10,
+        "total": 10
+      },
+      "topn": {
+        "pass": 8,
+        "total": 8
+      },
+      "category": {
+        "pass": 6,
+        "total": 6
+      },
+      "stock": {
+        "pass": 8,
+        "total": 8
+      },
+      "profit": {
+        "pass": 7,
+        "total": 8
+      },
+      "compare": {
+        "pass": 6,
+        "total": 6
+      },
+      "tools": {
+        "pass": 6,
+        "total": 6
+      },
+      "followup": {
+        "pass": 4,
+        "total": 4
+      },
+      "ambiguity": {
+        "pass": 4,
+        "total": 4
+      }
+    },
+    "guardBlocked": 0,
+    "unsafeExecuted": 0,
+    "liveCalls": 25,
+    "cachedCalls": 35,
+    "promptTokens": 65101,
+    "completionTokens": 3180,
+    "avgMs": 9853
+  },
+  "outcomes": [
+    {
+      "id": "t01",
+      "cat": "totals",
+      "q": "What were my total sales last month?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 173,
+      "route": "ai"
+    },
+    {
+      "id": "t02",
+      "cat": "totals",
+      "q": "Total sales this month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17'",
+      "ms": 10,
+      "route": "ai"
+    },
+    {
+      "id": "t03",
+      "cat": "totals",
+      "q": "How much did I sell yesterday?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(revenue),2) AS yesterday_revenue FROM v_sales WHERE sale_date = '2026-11-16'",
+      "ms": 4,
+      "route": "ai"
+    },
+    {
+      "id": "t04",
+      "cat": "totals",
+      "q": "What is the revenue for this financial year?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-04-01' AND '2026-11-17'",
+      "ms": 17,
+      "route": "ai"
+    },
+    {
+      "id": "t05",
+      "cat": "totals",
+      "q": "How many orders did we get last week?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT COUNT(DISTINCT invoice_no) AS orders_last_week FROM v_sales WHERE sale_date BETWEEN '2026-11-09' AND '2026-11-15'",
+      "ms": 5,
+      "route": "ai"
+    },
+    {
+      "id": "t06",
+      "cat": "totals",
+      "q": "Total units sold in the last 7 days",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(qty),3) AS total_units FROM v_sales WHERE sale_date BETWEEN '2026-11-11' AND '2026-11-17'",
+      "ms": 4,
+      "route": "ai"
+    },
+    {
+      "id": "t07",
+      "cat": "totals",
+      "q": "What were total expenses last month?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(amount),2) AS total_expenses FROM v_expenses WHERE expense_date BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 4,
+      "route": "ai"
+    },
+    {
+      "id": "t08",
+      "cat": "totals",
+      "q": "How much did we purchase from suppliers this month?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(cost_total),2) AS total_purchases FROM v_purchases WHERE purchase_date BETWEEN '2026-11-01' AND '2026-11-17'",
+      "ms": 5,
+      "route": "ai"
+    },
+    {
+      "id": "t09",
+      "cat": "totals",
+      "q": "What was the average order value last month?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(revenue) / NULLIF(COUNT(DISTINCT invoice_no),0), 2) AS avg_order_value FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 7,
+      "route": "ai"
+    },
+    {
+      "id": "t10",
+      "cat": "totals",
+      "q": "How much revenue came from Sundays in the last 30 days?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-19' AND '2026-11-17' AND weekday='Sunday'",
+      "ms": 6,
+      "route": "ai"
+    },
+    {
+      "id": "n01",
+      "cat": "topn",
+      "q": "Top 5 products by revenue last month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "5 row(s) match",
+      "sql": "SELECT product_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name ORDER BY revenue DESC LIMIT 5",
+      "ms": 8,
+      "route": "ai"
+    },
+    {
+      "id": "n02",
+      "cat": "topn",
+      "q": "Top 10 products by units sold this month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "10 row(s) match",
+      "sql": "SELECT product_name, ROUND(SUM(qty),3) AS units FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY sku, product_name ORDER BY units DESC LIMIT 10",
+      "ms": 5,
+      "route": "ai"
+    },
+    {
+      "id": "n03",
+      "cat": "topn",
+      "q": "Which 5 products made the most profit in the last 30 days?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "5 row(s) match",
+      "sql": "SELECT product_name, ROUND(SUM(gross_profit),2) AS profit FROM v_sales WHERE sale_date BETWEEN '2026-10-19' AND '2026-11-17' GROUP BY sku, product_name ORDER BY profit DESC LIMIT 5",
+      "ms": 10,
+      "route": "ai"
+    },
+    {
+      "id": "n04",
+      "cat": "topn",
+      "q": "Bottom 5 products by revenue last month, among products that sold",
+      "pass": true,
+      "kind": "answer",
+      "detail": "5 row(s) match",
+      "sql": "SELECT product_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name HAVING SUM(revenue)>0 ORDER BY revenue ASC LIMIT 5",
+      "ms": 8,
+      "route": "ai"
+    },
+    {
+      "id": "n05",
+      "cat": "topn",
+      "q": "Top 3 named customers by revenue in the last 90 days",
+      "pass": true,
+      "kind": "answer",
+      "detail": "3 row(s) match",
+      "sql": "SELECT customer_name, ROUND(SUM(revenue), 2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-08-20' AND '2026-11-17' AND customer_name IS NOT NULL GROUP BY customer_name ORDER BY revenue DESC LIMIT 3",
+      "ms": 8,
+      "route": "ai"
+    },
+    {
+      "id": "n06",
+      "cat": "topn",
+      "q": "Which supplier did we buy the most from this financial year?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT supplier_name, ROUND(SUM(cost_total),2) AS total_purchases FROM v_purchases WHERE purchase_date BETWEEN '2026-04-01' AND '2026-11-17' GROUP BY supplier_name ORDER BY total_purchases DESC LIMIT 1",
+      "ms": 7,
+      "route": "ai"
+    },
+    {
+      "id": "n07",
+      "cat": "topn",
+      "q": "Top 5 best selling products in Snacks & Biscuits last month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "5 row(s) match",
+      "sql": "SELECT product_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' AND category LIKE '%Snacks & Biscuits%' COLLATE NOCASE GROUP BY sku, product_name ORDER BY revenue DESC LIMIT 5",
+      "ms": 6,
+      "route": "ai"
+    },
+    {
+      "id": "n08",
+      "cat": "topn",
+      "q": "What is my single best selling product by units this financial year?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT product_name, ROUND(SUM(qty),3) AS units FROM v_sales WHERE fy='FY2026-27' GROUP BY sku, product_name ORDER BY units DESC LIMIT 1",
+      "ms": 80,
+      "route": "ai"
+    },
+    {
+      "id": "c01",
+      "cat": "category",
+      "q": "Sales by category last month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "12 row(s) match",
+      "sql": "SELECT category, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY category ORDER BY total_sales DESC",
+      "ms": 7,
+      "route": "ai"
+    },
+    {
+      "id": "c02",
+      "cat": "category",
+      "q": "Units sold by category this month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "12 row(s) match",
+      "sql": "SELECT category, ROUND(SUM(qty),3) AS units_sold FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY category ORDER BY units_sold DESC",
+      "ms": 5,
+      "route": "ai"
+    },
+    {
+      "id": "c03",
+      "cat": "category",
+      "q": "Expenses by category for last month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "6 row(s) match",
+      "sql": "SELECT category, ROUND(SUM(amount),2) AS total_expenses FROM v_expenses WHERE expense_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY category ORDER BY total_expenses DESC",
+      "ms": 4,
+      "route": "ai"
+    },
+    {
+      "id": "c04",
+      "cat": "category",
+      "q": "How many products do I have in each category?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "12 row(s) match",
+      "sql": "SELECT category, COUNT(*) AS product_count FROM v_products GROUP BY category ORDER BY product_count DESC LIMIT 200",
+      "ms": 19,
+      "route": "ai"
+    },
+    {
+      "id": "c05",
+      "cat": "category",
+      "q": "Stock value by category",
+      "pass": true,
+      "kind": "answer",
+      "detail": "12 row(s) match",
+      "sql": "SELECT category AS category, ROUND(SUM(stock_value_at_cost),2) AS inventory_value FROM v_products GROUP BY category ORDER BY inventory_value DESC",
+      "ms": 16,
+      "route": "ai"
+    },
+    {
+      "id": "c06",
+      "cat": "category",
+      "q": "Revenue by weekday for the last 90 days",
+      "pass": true,
+      "kind": "answer",
+      "detail": "7 row(s) match",
+      "sql": "SELECT weekday, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-08-20' AND '2026-11-17' GROUP BY weekday ORDER BY weekday",
+      "ms": 14,
+      "route": "ai"
+    },
+    {
+      "id": "s01",
+      "cat": "stock",
+      "q": "Which products are low on stock or out of stock?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "11 row(s) match",
+      "sql": "SELECT name, stock_on_hand, stock_status FROM v_products WHERE stock_status IN ('low','out') ORDER BY stock_status, name LIMIT 200",
+      "ms": 15,
+      "route": "ai"
+    },
+    {
+      "id": "s02",
+      "cat": "stock",
+      "q": "Which products are out of stock?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "3 row(s) match",
+      "sql": "SELECT name, stock_on_hand FROM v_products WHERE stock_status = 'out' ORDER BY name",
+      "ms": 15,
+      "route": "ai"
+    },
+    {
+      "id": "s03",
+      "cat": "stock",
+      "q": "How much stock of Sugar 1kg do I have?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(stock_on_hand,2) AS stock_quantity FROM v_products WHERE name LIKE '%Sugar 1kg%' COLLATE NOCASE",
+      "ms": 15,
+      "route": "ai"
+    },
+    {
+      "id": "s04",
+      "cat": "stock",
+      "q": "What is the total value of my inventory?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(stock_value_at_cost), 2) AS total_inventory_value FROM v_products",
+      "ms": 14,
+      "route": "ai"
+    },
+    {
+      "id": "s05",
+      "cat": "stock",
+      "q": "Show dead stock with its value",
+      "pass": true,
+      "kind": "answer",
+      "detail": "10 row(s) match",
+      "sql": "SELECT name, stock_on_hand, ROUND(stock_value_at_cost,2) AS stock_value FROM v_products WHERE stock_on_hand>0 AND days_since_last_sale>=90 ORDER BY stock_value DESC",
+      "ms": 14,
+      "route": "ai"
+    },
+    {
+      "id": "s06",
+      "cat": "stock",
+      "q": "How many products are overstocked?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT COUNT(*) AS overstocked_products FROM v_products WHERE stock_status = 'overstock'",
+      "ms": 14,
+      "route": "ai"
+    },
+    {
+      "id": "s07",
+      "cat": "stock",
+      "q": "List products that have fewer than 5 units in stock",
+      "pass": true,
+      "kind": "answer",
+      "detail": "10 row(s) match",
+      "sql": "SELECT name, ROUND(stock_on_hand,2) AS stock_on_hand FROM v_products WHERE stock_on_hand < 5 ORDER BY stock_on_hand ASC",
+      "ms": 16,
+      "route": "ai"
+    },
+    {
+      "id": "s08",
+      "cat": "stock",
+      "q": "How many products in the Dairy & Bakery category are in stock right now?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT COUNT(*) AS dairy_in_stock FROM v_products WHERE category LIKE '%Dairy & Bakery%' COLLATE NOCASE AND stock_on_hand>0",
+      "ms": 22454,
+      "route": "ai"
+    },
+    {
+      "id": "p01",
+      "cat": "profit",
+      "q": "What was my gross profit last month?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(gross_profit), 2) AS gross_profit FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 24601,
+      "route": "ai"
+    },
+    {
+      "id": "p02",
+      "cat": "profit",
+      "q": "Net profit last month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(net_profit), 2) AS net_profit FROM v_daily_summary WHERE day BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 24251,
+      "route": "ai"
+    },
+    {
+      "id": "p03",
+      "cat": "profit",
+      "q": "What is my profit margin percentage this month?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(100.0 * SUM(gross_profit) / NULLIF(SUM(revenue),0), 2) AS margin_pct FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17'",
+      "ms": 25031,
+      "route": "ai"
+    },
+    {
+      "id": "p04",
+      "cat": "profit",
+      "q": "Margin by category for the last 30 days",
+      "pass": true,
+      "kind": "answer",
+      "detail": "12 row(s) match",
+      "sql": "SELECT category, ROUND(100.0 * SUM(gross_profit) / NULLIF(SUM(revenue),0), 2) AS margin_pct FROM v_sales WHERE sale_date BETWEEN '2026-10-19' AND '2026-11-17' GROUP BY category ORDER BY margin_pct DESC",
+      "ms": 24270,
+      "route": "ai"
+    },
+    {
+      "id": "p05",
+      "cat": "profit",
+      "q": "Which category is the most profitable this financial year?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT category, ROUND(SUM(gross_profit),2) AS profit FROM v_sales WHERE fy='FY2026-27' GROUP BY category ORDER BY profit DESC LIMIT 1",
+      "ms": 24438,
+      "route": "ai"
+    },
+    {
+      "id": "p06",
+      "cat": "profit",
+      "q": "Gross profit by month for the last 6 months",
+      "pass": false,
+      "kind": "answer",
+      "detail": "gold [{\"month\":\"2026-06\",\"gross_profit\":62177.86},{\"month\":\"2026-07\",\"gross_profit\":64675.08},{\"month\":\"2026-08\",\"gross_profit\":84421.82}] vs got [{\"month\":\"2026-05\",\"gross_profit\":69271.85},{\"month\":\"2026-06\",\"gross_profit\":62177.86},{\"month\":\"2026-07\",\"gross_profit\":64675.08}]",
+      "sql": "SELECT month, ROUND(SUM(gross_profit), 2) AS gross_profit FROM v_sales WHERE sale_date BETWEEN '2026-05-01' AND '2026-11-17' GROUP BY month ORDER BY month",
+      "ms": 24447,
+      "route": "ai"
+    },
+    {
+      "id": "p07",
+      "cat": "profit",
+      "q": "What are the selling price and cost price of Aashirvaad Atta 5kg?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT sku, name, ROUND(selling_price,2) AS selling_price, ROUND(cost_price,2) AS cost_price FROM v_products WHERE name LIKE '%Aashirvaad Atta 5kg%' COLLATE NOCASE LIMIT 1",
+      "ms": 22380,
+      "route": "ai"
+    },
+    {
+      "id": "p08",
+      "cat": "profit",
+      "q": "How much profit did Milma Milk 500ml make last month?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(SUM(gross_profit), 2) AS profit FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' AND product_name LIKE '%Milma Milk 500ml%' COLLATE NOCASE",
+      "ms": 24668,
+      "route": "ai"
+    },
+    {
+      "id": "g01",
+      "cat": "compare",
+      "q": "Compare sales this month and last month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "2 row(s) match",
+      "sql": "SELECT 'this month' AS period, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' UNION ALL SELECT 'last month' AS period, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 24729,
+      "route": "ai"
+    },
+    {
+      "id": "g02",
+      "cat": "compare",
+      "q": "Sales this week versus last week",
+      "pass": true,
+      "kind": "answer",
+      "detail": "2 row(s) match",
+      "sql": "SELECT 'this week' AS period, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-11-16' AND '2026-11-17' UNION ALL SELECT 'last week' AS period, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-11-09' AND '2026-11-15'",
+      "ms": 23657,
+      "route": "ai"
+    },
+    {
+      "id": "g03",
+      "cat": "compare",
+      "q": "Month by month revenue for the last 3 months",
+      "pass": true,
+      "kind": "answer",
+      "detail": "3 row(s) match",
+      "sql": "SELECT month, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-11-17' GROUP BY month ORDER BY month",
+      "ms": 25700,
+      "route": "ai"
+    },
+    {
+      "id": "g04",
+      "cat": "compare",
+      "q": "Compare last month's gross profit with the month before",
+      "pass": true,
+      "kind": "answer",
+      "detail": "2 row(s) match",
+      "sql": "SELECT 'last month' AS period, ROUND(SUM(gross_profit),2) AS gross_profit FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' UNION ALL SELECT 'month before' AS period, ROUND(SUM(gross_profit),2) FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-09-30'",
+      "ms": 25595,
+      "route": "ai"
+    },
+    {
+      "id": "g05",
+      "cat": "compare",
+      "q": "What is the percentage growth in revenue of last month over the month before?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT ROUND(100.0 * (rev_last - rev_before) / NULLIF(rev_before,0), 2) AS revenue_growth_pct FROM (SELECT SUM(CASE WHEN sale_date BETWEEN '2026-10-01' AND '2026-10-31' THEN revenue ELSE 0 END) AS rev_last, SUM(CASE WHEN sale_date BETWEEN '2026-09-01' AND '2026-09-30' THEN revenue ELSE 0 END) AS rev_before FROM v_sales)",
+      "ms": 26723,
+      "route": "ai"
+    },
+    {
+      "id": "g06",
+      "cat": "compare",
+      "q": "Which category grew the most in rupees last month compared to the month before?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT category, ROUND(SUM(CASE WHEN sale_date BETWEEN '2026-10-01' AND '2026-10-31' THEN revenue ELSE 0 END) - SUM(CASE WHEN sale_date BETWEEN '2026-09-01' AND '2026-09-30' THEN revenue ELSE 0 END),2) AS growth_rupees FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-10-31' GROUP BY category ORDER BY growth_rupees DESC LIMIT 1",
+      "ms": 14,
+      "route": "ai"
+    },
+    {
+      "id": "f01",
+      "cat": "tools",
+      "q": "When will Sugar 1kg run out?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "tool forecast {\"product\":\"Sugar 1kg\"}",
+      "ms": 30,
+      "route": "tool"
+    },
+    {
+      "id": "f02",
+      "cat": "tools",
+      "q": "What should I reorder this week?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "tool reorder {\"product\":null}",
+      "ms": 22971,
+      "route": "tool"
+    },
+    {
+      "id": "f03",
+      "cat": "tools",
+      "q": "Forecast demand for Milma Milk 500ml for the next 30 days",
+      "pass": true,
+      "kind": "answer",
+      "detail": "tool forecast {\"product\":\"Milma Milk 500ml\"}",
+      "ms": 23506,
+      "route": "tool"
+    },
+    {
+      "id": "f04",
+      "cat": "tools",
+      "q": "How long will my stock of Parle-G Biscuit 100g last?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "tool forecast {\"product\":\"Parle-G Biscuit 100g\"}",
+      "ms": 22289,
+      "route": "tool"
+    },
+    {
+      "id": "f05",
+      "cat": "tools",
+      "q": "Do an ABC analysis of my products",
+      "pass": true,
+      "kind": "answer",
+      "detail": "tool abc {\"product\":null}",
+      "ms": 22700,
+      "route": "tool"
+    },
+    {
+      "id": "f06",
+      "cat": "tools",
+      "q": "Predict next week's sales of Maggi Noodles 70g",
+      "pass": true,
+      "kind": "answer",
+      "detail": "tool forecast {\"product\":\"Maggi Noodles 70g\"}",
+      "ms": 23028,
+      "route": "tool"
+    },
+    {
+      "id": "h01",
+      "cat": "followup",
+      "q": "and the month before?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT 'last month' AS period, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' UNION ALL SELECT 'month before' AS period, ROUND(SUM(revenue),2) FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-09-30'",
+      "ms": 7,
+      "route": "ai"
+    },
+    {
+      "id": "h02",
+      "cat": "followup",
+      "q": "show the same ranked by units instead",
+      "pass": true,
+      "kind": "answer",
+      "detail": "5 row(s) match",
+      "sql": "SELECT product_name, ROUND(SUM(qty), 3) AS units FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name ORDER BY units DESC LIMIT 5",
+      "ms": 24819,
+      "route": "ai"
+    },
+    {
+      "id": "h03",
+      "cat": "followup",
+      "q": "now only for this month",
+      "pass": true,
+      "kind": "answer",
+      "detail": "12 row(s) match",
+      "sql": "SELECT category, ROUND(SUM(revenue), 2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY category ORDER BY revenue DESC LIMIT 200",
+      "ms": 24201,
+      "route": "ai"
+    },
+    {
+      "id": "h04",
+      "cat": "followup",
+      "q": "and for Tata Salt 1kg?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "1 row(s) match",
+      "sql": "SELECT sku, name, stock_on_hand FROM v_products WHERE name LIKE '%Tata Salt 1kg%' COLLATE NOCASE",
+      "ms": 21452,
+      "route": "ai"
+    },
+    {
+      "id": "h05",
+      "cat": "ambiguity",
+      "q": "How are we doing?",
+      "pass": true,
+      "kind": "answer",
+      "detail": "expected clarify|sql, got sql",
+      "sql": "SELECT SUM(revenue) AS total_revenue, SUM(gross_profit) AS total_gross_profit, SUM(net_profit) AS total_net_profit, SUM(orders) AS total_orders FROM v_daily_summary WHERE day BETWEEN '2026-11-01' AND '2026-11-17'",
+      "ms": 21467,
+      "route": "ai"
+    },
+    {
+      "id": "h06",
+      "cat": "ambiguity",
+      "q": "What were sales during last Diwali?",
+      "pass": true,
+      "kind": "clarify",
+      "detail": "expected clarify|unsupported, got clarify",
+      "ms": 5
+    },
+    {
+      "id": "h07",
+      "cat": "ambiguity",
+      "q": "What are my supplier ratings?",
+      "pass": true,
+      "kind": "unsupported",
+      "detail": "expected unsupported, got unsupported",
+      "ms": 21248
+    },
+    {
+      "id": "h08",
+      "cat": "ambiguity",
+      "q": "Write a poem about my shop",
+      "pass": true,
+      "kind": "unsupported",
+      "detail": "expected unsupported, got unsupported",
+      "ms": 19939
+    }
+  ]
+}

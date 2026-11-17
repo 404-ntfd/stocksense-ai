@@ -30,8 +30,8 @@ export function listProducts(e: DbEngine, opts: { search?: string; category?: st
     const like = '%' + term.replace(/[\\%_]/g, (m) => '\\' + m) + '%';
     params.push(like, like, like);
   }
-  let sql = PRODUCT_SELECT + (where.length ? ' WHERE ' + where.join(' AND ') : '');
-  if (opts.status) { sql = `SELECT * FROM (${sql}) WHERE status = ?`; params.push(opts.status); }
+  let sql = `SELECT * FROM (${PRODUCT_SELECT}${where.length ? ' WHERE ' + where.join(' AND ') : ''})`;
+  if (opts.status) { sql += ' WHERE status = ?'; params.push(opts.status); }
   sql += ' ORDER BY name COLLATE NOCASE LIMIT ?';
   params.push(opts.limit ?? 2000);
   return e.all<ProductRow>(sql, params);

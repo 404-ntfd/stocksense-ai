@@ -115,7 +115,7 @@ const RULES: Rule[] = [
       didYouMean: slot.kind === 'one' && slot.score < 0.96 ? slot.product.name : undefined,
     } };
   } },
-  { id: 'reorder', re: /\b(re-?order|what (?:should|do|must) (?:i|we) (?:order|buy|purchase|restock)|purchase list|order list|what to (?:order|buy|restock)|restock|need to (?:order|buy))\b/, build: () => ({
+  { id: 'reorder', re: /\b(re-?order(?! (?:level|point))|what (?:should|do|must) (?:i|we) (?:order|buy|purchase|restock)|purchase list|order list|what to (?:order|buy|restock)|restock|need to (?:order|buy))\b/, build: () => ({
     used: ['reorder', 're-order', 'order', 'buy', 'purchase', 'restock', 'list', 'suggestions', 'suggestion', 'suggest', 'need', 'should', 'must', 'week', 'soon', 'today'],
     match: { id: 'reorder', title: 'What to reorder now', tool: { name: 'reorder', args: {} }, chart: { type: 'table' }, assumptions: ['Estimate based on your past sales, supplier lead time and a 14-day review period'], say: () => '', followups: ['Show low stock items', 'Show dead stock'] },
   }) },
@@ -154,7 +154,7 @@ const RULES: Rule[] = [
       followups: ['ABC analysis', 'Inventory value'],
     } };
   } },
-  { id: 'inventory_value', re: /\b(inventory value|stock value|value of (?:my |the |our )?(?:stock|inventory)|worth of stock|how much (?:stock|inventory) (?:do i|do we|is there)|total (?:stock|inventory))\b/, build: () => ({
+  { id: 'inventory_value', re: /\b(inventory value|stock value|value of (?:my |the |our )?(?:stock|inventory)|worth of stock|(?:stock|inventory) (?:is )?worth|how much (?:stock|inventory) (?:do i|do we|is there)|total (?:stock|inventory))\b/, build: () => ({
     used: ['inventory', 'stock', 'value', 'worth', 'cost', 'hand', 'holding'],
     match: {
       id: 'inventory_value', title: 'Inventory value at cost', sql: `SELECT ROUND(SUM(stock_value_at_cost), 2) AS inventory_value, COUNT(*) AS products, ROUND(SUM(stock_on_hand), 3) AS units_in_stock FROM v_products WHERE stock_on_hand > 0`, chart: { type: 'kpi' }, assumptions: ['Valued at cost price'],
@@ -222,7 +222,7 @@ const RULES: Rule[] = [
       followups: ['Margin by category', 'Top 5 products this month'],
     } };
   } },
-  { id: 'top_products', re: /\b(top|best|highest|most|fastest)[- ]?(?:selling|sellers?|sold|moving|profitable)?\b.*\b(products?|items?|sellers?|sku|skus)\b|\bbest[- ]?sell(?:ers?|ing)\b|\bwhat sells (?:the )?(?:most|best)\b/, build: (_m, t, ctx, period) => {
+  { id: 'top_products', re: /\b(top|best|highest|most|fastest)[- ]?(?:selling|sellers?|sold|moving|profitable)?\b.*\b(products?|items?|sellers?|sku|skus)\b|\bbest[- ]?sell(?:ers?|ing)\b|\bwhat sells (?:the )?(?:most|best)\b|\b(?:products?|items?) (?:are|is|sell|sold|make|made) (?:the )?(?:most|best|highest)\b/, build: (_m, t, ctx, period) => {
     const p = period ?? defaultPeriod(ctx, 'last 30 days');
     const n = Math.min(50, wordNumber(t.replace(p.matched, ' ')) ?? 5);
     const metric = metricOf(t);

@@ -184,7 +184,7 @@ export function guardSql(input: string, allowedTables: string[]): GuardResult {
     if (U === 'FROM') {
       // "EXTRACT(x FROM y)"-style and "IS DISTINCT FROM" are not table references
       const p1 = up(tokens[k - 1]);
-      if (p1 === 'DISTINCT' && up(tokens[k - 2]) === 'IS') continue;
+      if (p1 === 'DISTINCT' && (up(tokens[k - 2]) === 'IS' || (up(tokens[k - 2]) === 'NOT' && up(tokens[k - 3]) === 'IS'))) continue;
       expectTable = true; fromListAt.add(t.depth); continue;
     }
     if (U === 'JOIN') { expectTable = true; fromListAt.add(t.depth); continue; }

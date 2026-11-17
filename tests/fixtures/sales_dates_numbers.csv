@@ -1,0 +1,15 @@
+Bill No,Bill Date,Item,Qty,Rate,Discount
+B1,17/11/2026,Sugar 1kg,2,"₹46.00",0
+B2,17-Nov-26,Sugar 1kg,1,Rs. 46,-
+B3,2026-11-16,Sugar 1kg,1.5,46,NA
+B4,03/04/2026,Tata Salt 1kg,1,28,(2)
+B5,46342,Tata Salt 1kg,3,28,0
+B6,16/11/2026 18:45,Parle-G Biscuit 100g,10,10,0
+B7,,Parle-G Biscuit 100g,1,10,0
+B8,31/02/2026,Parle-G Biscuit 100g,1,10,0
+B9,15/11/2026,Parle-G Biscuit 100g,-2,10,0
+B10,15/11/2026,Brand New Item 250g,4,55,0
+B11,15/11/2026,Sugar 1kg,1,0,0
+B12,15/11/2026,Sugar 1kg,1,30,0
+B13,15/11/2026,Sugar 1kg,abc,46,0
+Total,,,,,

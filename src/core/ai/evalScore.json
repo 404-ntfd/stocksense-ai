@@ -1,1 +1,10 @@
-{}
+{
+  "llm": {
+    "scorePct": 98.3,
+    "passed": 59,
+    "total": 60,
+    "date": "2026-11-17",
+    "model": "openai/gpt-oss-120b",
+    "unsafeExecuted": 0
+  }
+}
