@@ -105,9 +105,9 @@ jobs:
           cp "$SRC" "$OUT"
           cp "$(ls android/app/build/outputs/apk/debug/*.apk | head -1)" "StockSense-AI-v${{ steps.ver.outputs.name }}-debug.apk"
           "$BT/apksigner" verify --verbose --print-certs "$OUT" | tee apk-verify.txt | grep -E "Verifies|scheme|certificate DN|SHA-256"
-          "$BT/aapt2" dump badging "$OUT" | grep -E "^package|^sdkVersion|^targetSdkVersion|uses-permission:" | tee -a apk-verify.txt
+          "$BT/aapt2" dump badging "$OUT" | grep -E "^package|^minSdkVersion|^sdkVersion|^targetSdkVersion|uses-permission:" | tee -a apk-verify.txt
           grep -q "^Verifies" apk-verify.txt
-          grep -q "sdkVersion:'24'" apk-verify.txt
+          grep -Eq "^(minSdkVersion|sdkVersion):'24'" apk-verify.txt
           grep -q "targetSdkVersion:'36'" apk-verify.txt
           SIZE=$(stat -c %s "$OUT"); echo "APK size: $SIZE bytes" | tee -a apk-verify.txt
           test "$SIZE" -lt 31457280
