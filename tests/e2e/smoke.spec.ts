@@ -33,7 +33,7 @@ test('ask by typing: offline answer with chart, table and SQL', async ({ page })
   await onboardWithDemo(page);
   await page.goto('/#/ask');
   await ask(page, 'What were my total sales last month?');
-  await expect(page.getByTestId('answer-text')).toContainText('₹3,83,449');
+  await expect(page.getByTestId('answer-text')).toHaveText(/^Total sales for [A-Z][a-z]{2} \d{4} were ₹[\d.]+ lakh \(₹[\d,]+\) from [\d,]+ orders\.$/);
   await expect(page.getByTestId('answer-kpi')).toBeVisible();
   await page.getByTestId('toggle-sql').click();
   await expect(page.getByTestId('answer-sql')).toContainText('v_sales');

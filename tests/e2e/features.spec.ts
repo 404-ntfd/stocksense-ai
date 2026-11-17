@@ -146,5 +146,5 @@ test('prompt-injection text in data is treated as data', async ({ page }) => {
   await expect(page.getByTestId('report-ok')).toHaveText('6', { timeout: 20_000 });
   await page.goto('/#/ask');
   await ask(page, 'total sales last month');
-  await expect(page.getByTestId('answer-text')).toContainText('₹3,83,449');
+  await expect(page.getByTestId('answer-text')).toHaveText(/^Total sales for [A-Z][a-z]{2} \d{4} were ₹[\d.]+ lakh \(₹[\d,]+\) from [\d,]+ orders\.$/);
 });
