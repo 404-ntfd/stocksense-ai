@@ -948,6 +948,9 @@ Changes (you will be asked to confirm): *Sold 2 Sugar 1kg at 46* · *Received 24
 | 26 | v1.0.0 APK is signed with a temporary per-run CI key | The session cannot write Actions secrets; once the four `ANDROID_KEYSTORE_*` secrets are added, re-running the workflow signs with the permanent key (see README) | Commit the keystore (forbidden) |
 | 27 | GitHub Pages must be switched on once by the repo owner (Settings → Pages → branch `gh-pages`) | `GITHUB_TOKEN` cannot enable Pages; the workflow already publishes the build to `gh-pages` | A personal access token in secrets |
 | 28 | Tailwind + system font stack; one teal accent, status colours reserved for stock state; ECharts palette from the validated dataviz reference palette | Consistent, accessible charts in light and dark mode; no dual-axis charts (revenue vs profit share one rupee axis) | Chart.js defaults |
+| 29 | Launcher icons and the PWA icons are rendered from `public/icon.svg` by `scripts/make-icons.mjs` (Playwright's Chromium) instead of `@capacitor/assets` | No extra native image toolchain (sharp) to install; one SVG source for every size | `@capacitor/assets` |
+| 30 | Quick stock adjustment is an **Adjust** button on each inventory row instead of swipe-to-adjust; Home refreshes with a button instead of pull-to-refresh | Buttons are discoverable, accessible and testable; swipe gestures conflict with horizontal scrolling | Gesture handlers |
+| 31 | Answers are shared as text (system share sheet / clipboard), not as an image | Text works in WhatsApp and SMS everywhere; image rendering of charts was cut for time | html-to-image capture |
 
 ## 21. Changelog
 

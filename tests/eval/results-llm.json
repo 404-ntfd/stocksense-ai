@@ -46,11 +46,11 @@
     },
     "guardBlocked": 0,
     "unsafeExecuted": 0,
-    "liveCalls": 25,
-    "cachedCalls": 35,
-    "promptTokens": 65101,
-    "completionTokens": 3180,
-    "avgMs": 9853
+    "liveCalls": 60,
+    "cachedCalls": 0,
+    "promptTokens": 159563,
+    "completionTokens": 7560,
+    "avgMs": 24162
   },
   "outcomes": [
     {
@@ -60,8 +60,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
-      "ms": 173,
+      "sql": "SELECT ROUND(SUM(revenue), 2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 24289,
       "route": "ai"
     },
     {
@@ -72,7 +72,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17'",
-      "ms": 10,
+      "ms": 24272,
       "route": "ai"
     },
     {
@@ -82,8 +82,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT ROUND(SUM(revenue),2) AS yesterday_revenue FROM v_sales WHERE sale_date = '2026-11-16'",
-      "ms": 4,
+      "sql": "SELECT ROUND(SUM(revenue),2) AS yesterday_revenue FROM v_daily_summary WHERE day = '2026-11-16'",
+      "ms": 23033,
       "route": "ai"
     },
     {
@@ -94,7 +94,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-04-01' AND '2026-11-17'",
-      "ms": 17,
+      "ms": 24401,
       "route": "ai"
     },
     {
@@ -105,7 +105,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT COUNT(DISTINCT invoice_no) AS orders_last_week FROM v_sales WHERE sale_date BETWEEN '2026-11-09' AND '2026-11-15'",
-      "ms": 5,
+      "ms": 23600,
       "route": "ai"
     },
     {
@@ -116,7 +116,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(qty),3) AS total_units FROM v_sales WHERE sale_date BETWEEN '2026-11-11' AND '2026-11-17'",
-      "ms": 4,
+      "ms": 23833,
       "route": "ai"
     },
     {
@@ -126,8 +126,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT ROUND(SUM(amount),2) AS total_expenses FROM v_expenses WHERE expense_date BETWEEN '2026-10-01' AND '2026-10-31'",
-      "ms": 4,
+      "sql": "SELECT ROUND(SUM(amount), 2) AS total_expenses FROM v_expenses WHERE expense_date BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 23795,
       "route": "ai"
     },
     {
@@ -138,7 +138,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(cost_total),2) AS total_purchases FROM v_purchases WHERE purchase_date BETWEEN '2026-11-01' AND '2026-11-17'",
-      "ms": 5,
+      "ms": 24928,
       "route": "ai"
     },
     {
@@ -149,7 +149,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(revenue) / NULLIF(COUNT(DISTINCT invoice_no),0), 2) AS avg_order_value FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
-      "ms": 7,
+      "ms": 23875,
       "route": "ai"
     },
     {
@@ -160,7 +160,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-19' AND '2026-11-17' AND weekday='Sunday'",
-      "ms": 6,
+      "ms": 24577,
       "route": "ai"
     },
     {
@@ -171,7 +171,7 @@
       "kind": "answer",
       "detail": "5 row(s) match",
       "sql": "SELECT product_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name ORDER BY revenue DESC LIMIT 5",
-      "ms": 8,
+      "ms": 25192,
       "route": "ai"
     },
     {
@@ -181,8 +181,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "10 row(s) match",
-      "sql": "SELECT product_name, ROUND(SUM(qty),3) AS units FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY sku, product_name ORDER BY units DESC LIMIT 10",
-      "ms": 5,
+      "sql": "SELECT product_name, ROUND(SUM(qty),3) AS units_sold FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY sku, product_name ORDER BY units_sold DESC LIMIT 10",
+      "ms": 24592,
       "route": "ai"
     },
     {
@@ -193,7 +193,7 @@
       "kind": "answer",
       "detail": "5 row(s) match",
       "sql": "SELECT product_name, ROUND(SUM(gross_profit),2) AS profit FROM v_sales WHERE sale_date BETWEEN '2026-10-19' AND '2026-11-17' GROUP BY sku, product_name ORDER BY profit DESC LIMIT 5",
-      "ms": 10,
+      "ms": 24465,
       "route": "ai"
     },
     {
@@ -203,8 +203,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "5 row(s) match",
-      "sql": "SELECT product_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name HAVING SUM(revenue)>0 ORDER BY revenue ASC LIMIT 5",
-      "ms": 8,
+      "sql": "SELECT product_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name HAVING SUM(qty)>0 ORDER BY revenue ASC LIMIT 5",
+      "ms": 24656,
       "route": "ai"
     },
     {
@@ -214,8 +214,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "3 row(s) match",
-      "sql": "SELECT customer_name, ROUND(SUM(revenue), 2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-08-20' AND '2026-11-17' AND customer_name IS NOT NULL GROUP BY customer_name ORDER BY revenue DESC LIMIT 3",
-      "ms": 8,
+      "sql": "SELECT customer_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-08-20' AND '2026-11-17' AND customer_name IS NOT NULL GROUP BY customer_name ORDER BY revenue DESC LIMIT 3",
+      "ms": 25736,
       "route": "ai"
     },
     {
@@ -226,7 +226,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT supplier_name, ROUND(SUM(cost_total),2) AS total_purchases FROM v_purchases WHERE purchase_date BETWEEN '2026-04-01' AND '2026-11-17' GROUP BY supplier_name ORDER BY total_purchases DESC LIMIT 1",
-      "ms": 7,
+      "ms": 24481,
       "route": "ai"
     },
     {
@@ -237,7 +237,7 @@
       "kind": "answer",
       "detail": "5 row(s) match",
       "sql": "SELECT product_name, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' AND category LIKE '%Snacks & Biscuits%' COLLATE NOCASE GROUP BY sku, product_name ORDER BY revenue DESC LIMIT 5",
-      "ms": 6,
+      "ms": 24784,
       "route": "ai"
     },
     {
@@ -248,7 +248,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT product_name, ROUND(SUM(qty),3) AS units FROM v_sales WHERE fy='FY2026-27' GROUP BY sku, product_name ORDER BY units DESC LIMIT 1",
-      "ms": 80,
+      "ms": 24867,
       "route": "ai"
     },
     {
@@ -259,7 +259,7 @@
       "kind": "answer",
       "detail": "12 row(s) match",
       "sql": "SELECT category, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY category ORDER BY total_sales DESC",
-      "ms": 7,
+      "ms": 24909,
       "route": "ai"
     },
     {
@@ -270,7 +270,7 @@
       "kind": "answer",
       "detail": "12 row(s) match",
       "sql": "SELECT category, ROUND(SUM(qty),3) AS units_sold FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY category ORDER BY units_sold DESC",
-      "ms": 5,
+      "ms": 24725,
       "route": "ai"
     },
     {
@@ -280,8 +280,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "6 row(s) match",
-      "sql": "SELECT category, ROUND(SUM(amount),2) AS total_expenses FROM v_expenses WHERE expense_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY category ORDER BY total_expenses DESC",
-      "ms": 4,
+      "sql": "SELECT category, ROUND(SUM(amount), 2) AS total_expenses FROM v_expenses WHERE expense_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY category ORDER BY total_expenses DESC LIMIT 200",
+      "ms": 24835,
       "route": "ai"
     },
     {
@@ -292,7 +292,7 @@
       "kind": "answer",
       "detail": "12 row(s) match",
       "sql": "SELECT category, COUNT(*) AS product_count FROM v_products GROUP BY category ORDER BY product_count DESC LIMIT 200",
-      "ms": 19,
+      "ms": 22631,
       "route": "ai"
     },
     {
@@ -302,8 +302,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "12 row(s) match",
-      "sql": "SELECT category AS category, ROUND(SUM(stock_value_at_cost),2) AS inventory_value FROM v_products GROUP BY category ORDER BY inventory_value DESC",
-      "ms": 16,
+      "sql": "SELECT category, ROUND(SUM(stock_value_at_cost),2) AS stock_value FROM v_products GROUP BY category ORDER BY stock_value DESC LIMIT 200",
+      "ms": 25210,
       "route": "ai"
     },
     {
@@ -314,7 +314,7 @@
       "kind": "answer",
       "detail": "7 row(s) match",
       "sql": "SELECT weekday, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-08-20' AND '2026-11-17' GROUP BY weekday ORDER BY weekday",
-      "ms": 14,
+      "ms": 24604,
       "route": "ai"
     },
     {
@@ -324,8 +324,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "11 row(s) match",
-      "sql": "SELECT name, stock_on_hand, stock_status FROM v_products WHERE stock_status IN ('low','out') ORDER BY stock_status, name LIMIT 200",
-      "ms": 15,
+      "sql": "SELECT name, stock_on_hand, stock_status FROM v_products WHERE stock_status IN ('low','out') ORDER BY stock_status, name",
+      "ms": 23297,
       "route": "ai"
     },
     {
@@ -335,8 +335,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "3 row(s) match",
-      "sql": "SELECT name, stock_on_hand FROM v_products WHERE stock_status = 'out' ORDER BY name",
-      "ms": 15,
+      "sql": "SELECT sku, name, stock_on_hand FROM v_products WHERE stock_status = 'out' ORDER BY name",
+      "ms": 22440,
       "route": "ai"
     },
     {
@@ -346,8 +346,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT ROUND(stock_on_hand,2) AS stock_quantity FROM v_products WHERE name LIKE '%Sugar 1kg%' COLLATE NOCASE",
-      "ms": 15,
+      "sql": "SELECT sku, name, ROUND(stock_on_hand,2) AS stock_units FROM v_products WHERE name LIKE '%Sugar 1kg%' COLLATE NOCASE",
+      "ms": 22864,
       "route": "ai"
     },
     {
@@ -357,8 +357,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT ROUND(SUM(stock_value_at_cost), 2) AS total_inventory_value FROM v_products",
-      "ms": 14,
+      "sql": "SELECT ROUND(SUM(stock_value_at_cost), 2) AS total_inventory_value FROM v_products;",
+      "ms": 23113,
       "route": "ai"
     },
     {
@@ -368,8 +368,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "10 row(s) match",
-      "sql": "SELECT name, stock_on_hand, ROUND(stock_value_at_cost,2) AS stock_value FROM v_products WHERE stock_on_hand>0 AND days_since_last_sale>=90 ORDER BY stock_value DESC",
-      "ms": 14,
+      "sql": "SELECT name, stock_on_hand, ROUND(stock_value_at_cost,2) AS stock_value FROM v_products WHERE stock_on_hand>0 AND days_since_last_sale>=90 ORDER BY stock_value_at_cost DESC",
+      "ms": 23055,
       "route": "ai"
     },
     {
@@ -380,7 +380,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT COUNT(*) AS overstocked_products FROM v_products WHERE stock_status = 'overstock'",
-      "ms": 14,
+      "ms": 23066,
       "route": "ai"
     },
     {
@@ -390,8 +390,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "10 row(s) match",
-      "sql": "SELECT name, ROUND(stock_on_hand,2) AS stock_on_hand FROM v_products WHERE stock_on_hand < 5 ORDER BY stock_on_hand ASC",
-      "ms": 16,
+      "sql": "SELECT name, ROUND(stock_on_hand,2) AS stock_on_hand FROM v_products WHERE stock_on_hand < 5 ORDER BY stock_on_hand ASC LIMIT 200",
+      "ms": 23927,
       "route": "ai"
     },
     {
@@ -401,8 +401,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT COUNT(*) AS dairy_in_stock FROM v_products WHERE category LIKE '%Dairy & Bakery%' COLLATE NOCASE AND stock_on_hand>0",
-      "ms": 22454,
+      "sql": "SELECT COUNT(*) AS dairy_in_stock_products FROM v_products WHERE category LIKE '%Dairy & Bakery%' COLLATE NOCASE AND stock_on_hand > 0",
+      "ms": 22979,
       "route": "ai"
     },
     {
@@ -412,8 +412,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT ROUND(SUM(gross_profit), 2) AS gross_profit FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
-      "ms": 24601,
+      "sql": "SELECT ROUND(SUM(gross_profit), 2) AS gross_profit FROM v_daily_summary WHERE day BETWEEN '2026-10-01' AND '2026-10-31'",
+      "ms": 25030,
       "route": "ai"
     },
     {
@@ -424,7 +424,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(net_profit), 2) AS net_profit FROM v_daily_summary WHERE day BETWEEN '2026-10-01' AND '2026-10-31'",
-      "ms": 24251,
+      "ms": 24286,
       "route": "ai"
     },
     {
@@ -435,7 +435,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(100.0 * SUM(gross_profit) / NULLIF(SUM(revenue),0), 2) AS margin_pct FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17'",
-      "ms": 25031,
+      "ms": 25567,
       "route": "ai"
     },
     {
@@ -445,8 +445,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "12 row(s) match",
-      "sql": "SELECT category, ROUND(100.0 * SUM(gross_profit) / NULLIF(SUM(revenue),0), 2) AS margin_pct FROM v_sales WHERE sale_date BETWEEN '2026-10-19' AND '2026-11-17' GROUP BY category ORDER BY margin_pct DESC",
-      "ms": 24270,
+      "sql": "SELECT category, ROUND(100.0 * SUM(gross_profit) / NULLIF(SUM(revenue), 0), 2) AS margin_pct FROM v_sales WHERE sale_date BETWEEN '2026-10-19' AND '2026-11-17' GROUP BY category ORDER BY margin_pct DESC LIMIT 200",
+      "ms": 26371,
       "route": "ai"
     },
     {
@@ -456,8 +456,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT category, ROUND(SUM(gross_profit),2) AS profit FROM v_sales WHERE fy='FY2026-27' GROUP BY category ORDER BY profit DESC LIMIT 1",
-      "ms": 24438,
+      "sql": "SELECT category, ROUND(SUM(gross_profit),2) AS profit FROM v_sales WHERE sale_date BETWEEN '2026-04-01' AND '2026-11-17' GROUP BY category ORDER BY profit DESC LIMIT 1",
+      "ms": 24541,
       "route": "ai"
     },
     {
@@ -468,7 +468,7 @@
       "kind": "answer",
       "detail": "gold [{\"month\":\"2026-06\",\"gross_profit\":62177.86},{\"month\":\"2026-07\",\"gross_profit\":64675.08},{\"month\":\"2026-08\",\"gross_profit\":84421.82}] vs got [{\"month\":\"2026-05\",\"gross_profit\":69271.85},{\"month\":\"2026-06\",\"gross_profit\":62177.86},{\"month\":\"2026-07\",\"gross_profit\":64675.08}]",
       "sql": "SELECT month, ROUND(SUM(gross_profit), 2) AS gross_profit FROM v_sales WHERE sale_date BETWEEN '2026-05-01' AND '2026-11-17' GROUP BY month ORDER BY month",
-      "ms": 24447,
+      "ms": 24780,
       "route": "ai"
     },
     {
@@ -478,8 +478,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT sku, name, ROUND(selling_price,2) AS selling_price, ROUND(cost_price,2) AS cost_price FROM v_products WHERE name LIKE '%Aashirvaad Atta 5kg%' COLLATE NOCASE LIMIT 1",
-      "ms": 22380,
+      "sql": "SELECT selling_price AS selling_price, cost_price AS cost_price FROM v_products WHERE name LIKE '%Aashirvaad Atta 5kg%' COLLATE NOCASE LIMIT 1",
+      "ms": 22449,
       "route": "ai"
     },
     {
@@ -490,7 +490,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(SUM(gross_profit), 2) AS profit FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' AND product_name LIKE '%Milma Milk 500ml%' COLLATE NOCASE",
-      "ms": 24668,
+      "ms": 25194,
       "route": "ai"
     },
     {
@@ -501,7 +501,7 @@
       "kind": "answer",
       "detail": "2 row(s) match",
       "sql": "SELECT 'this month' AS period, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' UNION ALL SELECT 'last month' AS period, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31'",
-      "ms": 24729,
+      "ms": 24882,
       "route": "ai"
     },
     {
@@ -512,7 +512,7 @@
       "kind": "answer",
       "detail": "2 row(s) match",
       "sql": "SELECT 'this week' AS period, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-11-16' AND '2026-11-17' UNION ALL SELECT 'last week' AS period, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-11-09' AND '2026-11-15'",
-      "ms": 23657,
+      "ms": 24098,
       "route": "ai"
     },
     {
@@ -523,7 +523,7 @@
       "kind": "answer",
       "detail": "3 row(s) match",
       "sql": "SELECT month, ROUND(SUM(revenue),2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-11-17' GROUP BY month ORDER BY month",
-      "ms": 25700,
+      "ms": 26007,
       "route": "ai"
     },
     {
@@ -533,8 +533,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "2 row(s) match",
-      "sql": "SELECT 'last month' AS period, ROUND(SUM(gross_profit),2) AS gross_profit FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' UNION ALL SELECT 'month before' AS period, ROUND(SUM(gross_profit),2) FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-09-30'",
-      "ms": 25595,
+      "sql": "SELECT 'last month' AS period, ROUND(SUM(gross_profit), 2) AS gross_profit FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' UNION ALL SELECT 'month before', ROUND(SUM(gross_profit), 2) FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-09-30'",
+      "ms": 25911,
       "route": "ai"
     },
     {
@@ -545,7 +545,7 @@
       "kind": "answer",
       "detail": "1 row(s) match",
       "sql": "SELECT ROUND(100.0 * (rev_last - rev_before) / NULLIF(rev_before,0), 2) AS revenue_growth_pct FROM (SELECT SUM(CASE WHEN sale_date BETWEEN '2026-10-01' AND '2026-10-31' THEN revenue ELSE 0 END) AS rev_last, SUM(CASE WHEN sale_date BETWEEN '2026-09-01' AND '2026-09-30' THEN revenue ELSE 0 END) AS rev_before FROM v_sales)",
-      "ms": 26723,
+      "ms": 27359,
       "route": "ai"
     },
     {
@@ -555,8 +555,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT category, ROUND(SUM(CASE WHEN sale_date BETWEEN '2026-10-01' AND '2026-10-31' THEN revenue ELSE 0 END) - SUM(CASE WHEN sale_date BETWEEN '2026-09-01' AND '2026-09-30' THEN revenue ELSE 0 END),2) AS growth_rupees FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-10-31' GROUP BY category ORDER BY growth_rupees DESC LIMIT 1",
-      "ms": 14,
+      "sql": "WITH rev AS (SELECT category,\n       SUM(CASE WHEN sale_date BETWEEN '2026-10-01' AND '2026-10-31' THEN revenue ELSE 0 END) AS rev_last,\n       SUM(CASE WHEN sale_date BETWEEN '2026-09-01' AND '2026-09-30' THEN revenue ELSE 0 END) AS rev_prev\n FROM v_sales\n WHERE sale_date BETWEEN '2026-09-01' AND '2026-10-31'\n GROUP BY category)\nSELECT category,\n       ROUND(rev_last - rev_prev, 2) AS growth_rupees\nFROM rev\nORDER BY growth_rupees DESC\nLIMIT 1;",
+      "ms": 27026,
       "route": "ai"
     },
     {
@@ -566,7 +566,7 @@
       "pass": true,
       "kind": "answer",
       "detail": "tool forecast {\"product\":\"Sugar 1kg\"}",
-      "ms": 30,
+      "ms": 21725,
       "route": "tool"
     },
     {
@@ -576,7 +576,7 @@
       "pass": true,
       "kind": "answer",
       "detail": "tool reorder {\"product\":null}",
-      "ms": 22971,
+      "ms": 23249,
       "route": "tool"
     },
     {
@@ -586,7 +586,7 @@
       "pass": true,
       "kind": "answer",
       "detail": "tool forecast {\"product\":\"Milma Milk 500ml\"}",
-      "ms": 23506,
+      "ms": 23941,
       "route": "tool"
     },
     {
@@ -596,7 +596,7 @@
       "pass": true,
       "kind": "answer",
       "detail": "tool forecast {\"product\":\"Parle-G Biscuit 100g\"}",
-      "ms": 22289,
+      "ms": 22768,
       "route": "tool"
     },
     {
@@ -606,7 +606,7 @@
       "pass": true,
       "kind": "answer",
       "detail": "tool abc {\"product\":null}",
-      "ms": 22700,
+      "ms": 22861,
       "route": "tool"
     },
     {
@@ -616,7 +616,7 @@
       "pass": true,
       "kind": "answer",
       "detail": "tool forecast {\"product\":\"Maggi Noodles 70g\"}",
-      "ms": 23028,
+      "ms": 23573,
       "route": "tool"
     },
     {
@@ -626,8 +626,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT 'last month' AS period, ROUND(SUM(revenue),2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' UNION ALL SELECT 'month before' AS period, ROUND(SUM(revenue),2) FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-09-30'",
-      "ms": 7,
+      "sql": "SELECT 'last month' AS period, ROUND(SUM(revenue), 2) AS total_sales FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' UNION ALL SELECT 'month before' AS period, ROUND(SUM(revenue), 2) FROM v_sales WHERE sale_date BETWEEN '2026-09-01' AND '2026-09-30'",
+      "ms": 27203,
       "route": "ai"
     },
     {
@@ -637,8 +637,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "5 row(s) match",
-      "sql": "SELECT product_name, ROUND(SUM(qty), 3) AS units FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name ORDER BY units DESC LIMIT 5",
-      "ms": 24819,
+      "sql": "SELECT product_name, ROUND(SUM(qty),3) AS units FROM v_sales WHERE sale_date BETWEEN '2026-10-01' AND '2026-10-31' GROUP BY sku, product_name ORDER BY units DESC LIMIT 5",
+      "ms": 24103,
       "route": "ai"
     },
     {
@@ -648,8 +648,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "12 row(s) match",
-      "sql": "SELECT category, ROUND(SUM(revenue), 2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY category ORDER BY revenue DESC LIMIT 200",
-      "ms": 24201,
+      "sql": "SELECT category, ROUND(SUM(revenue), 2) AS revenue FROM v_sales WHERE sale_date BETWEEN '2026-11-01' AND '2026-11-17' GROUP BY category ORDER BY revenue DESC",
+      "ms": 25077,
       "route": "ai"
     },
     {
@@ -659,8 +659,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "1 row(s) match",
-      "sql": "SELECT sku, name, stock_on_hand FROM v_products WHERE name LIKE '%Tata Salt 1kg%' COLLATE NOCASE",
-      "ms": 21452,
+      "sql": "SELECT stock_on_hand FROM v_products WHERE name = 'Tata Salt 1kg'",
+      "ms": 21787,
       "route": "ai"
     },
     {
@@ -670,8 +670,8 @@
       "pass": true,
       "kind": "answer",
       "detail": "expected clarify|sql, got sql",
-      "sql": "SELECT SUM(revenue) AS total_revenue, SUM(gross_profit) AS total_gross_profit, SUM(net_profit) AS total_net_profit, SUM(orders) AS total_orders FROM v_daily_summary WHERE day BETWEEN '2026-11-01' AND '2026-11-17'",
-      "ms": 21467,
+      "sql": "SELECT ROUND(SUM(revenue),2) AS revenue, ROUND(SUM(gross_profit),2) AS profit, ROUND(SUM(net_profit),2) AS net_profit, SUM(orders) AS orders FROM v_daily_summary WHERE day BETWEEN '2026-11-01' AND '2026-11-17'",
+      "ms": 22339,
       "route": "ai"
     },
     {
@@ -681,7 +681,7 @@
       "pass": true,
       "kind": "clarify",
       "detail": "expected clarify|unsupported, got clarify",
-      "ms": 5
+      "ms": 24607
     },
     {
       "id": "h07",
@@ -690,7 +690,7 @@
       "pass": true,
       "kind": "unsupported",
       "detail": "expected unsupported, got unsupported",
-      "ms": 21248
+      "ms": 21479
     },
     {
       "id": "h08",
@@ -699,7 +699,7 @@
       "pass": true,
       "kind": "unsupported",
       "detail": "expected unsupported, got unsupported",
-      "ms": 19939
+      "ms": 20491
     }
   ]
 }
