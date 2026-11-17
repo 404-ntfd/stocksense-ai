@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Layout } from './Layout';
 import { useSettings } from './settings';
@@ -7,16 +7,17 @@ import { Button, Card, Spinner } from './ui';
 import { Dashboard } from '@/features/dashboard/Dashboard';
 import { popBack } from '@/core/util/backstack';
 import { isNative } from '@/core/util/platform';
+// Every screen is bundled eagerly: the app must open any screen offline, even before the service worker has cached it.
+import { Inventory } from '@/features/inventory/Inventory';
+import { ProductDetail } from '@/features/inventory/ProductDetail';
+import { Ask } from '@/features/ask/Ask';
+import { DataScreen } from '@/features/data/DataScreen';
+import { ImportWizard } from '@/features/data/ImportWizard';
+import { TableView } from '@/features/data/TableView';
+import { Insights } from '@/features/insights/Insights';
+import { Settings } from '@/features/settings/Settings';
+import { Onboarding } from '@/features/onboarding/Onboarding';
 
-const Inventory = lazy(() => import('@/features/inventory/Inventory').then((m) => ({ default: m.Inventory })));
-const ProductDetail = lazy(() => import('@/features/inventory/ProductDetail').then((m) => ({ default: m.ProductDetail })));
-const Ask = lazy(() => import('@/features/ask/Ask').then((m) => ({ default: m.Ask })));
-const DataScreen = lazy(() => import('@/features/data/DataScreen').then((m) => ({ default: m.DataScreen })));
-const ImportWizard = lazy(() => import('@/features/data/ImportWizard').then((m) => ({ default: m.ImportWizard })));
-const TableView = lazy(() => import('@/features/data/TableView').then((m) => ({ default: m.TableView })));
-const Insights = lazy(() => import('@/features/insights/Insights').then((m) => ({ default: m.Insights })));
-const Settings = lazy(() => import('@/features/settings/Settings').then((m) => ({ default: m.Settings })));
-const Onboarding = lazy(() => import('@/features/onboarding/Onboarding').then((m) => ({ default: m.Onboarding })));
 
 /** Android back button: close the open sheet first, then go back; on Home, a second press within 2 s exits. */
 function BackButton() {

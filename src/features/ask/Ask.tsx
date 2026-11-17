@@ -23,7 +23,7 @@ export function Ask() {
   const nav = useNavigate();
   const [params, setParams] = useSearchParams();
   const s = useSettings();
-  const online = useApp((x) => x.online);
+  const online = useApp((x) => x.online) && navigator.onLine !== false;
   const bump = useApp((x) => x.bumpData);
   const setMicLive = useApp((x) => x.setMicLive);
   const { messages, history, push, update, remove, addTurn, clear } = useChat();

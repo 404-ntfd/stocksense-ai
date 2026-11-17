@@ -39,10 +39,13 @@ function restart(): void {
 }
 
 function call(name: string, args: unknown[]): Promise<unknown> {
-  const prepared = args.map((a) => (typeof a === 'function' ? Comlink.proxy(a as (...x: unknown[]) => unknown) : a));
+  const cbIndex = args.findIndex((a) => typeof a === 'function');
+  const prepared = args.map((a) => (typeof a === 'function' ? null : a));
   const transfers: Transferable[] = [];
   if (name === 'parseFile' || name === 'restore') for (const a of prepared) if (a instanceof Uint8Array) transfers.push(a.buffer as ArrayBuffer);
-  return host().call(name, transfers.length ? Comlink.transfer(prepared, transfers) : prepared) as Promise<unknown>;
+  const payload = transfers.length ? Comlink.transfer(prepared, transfers) : prepared;
+  if (cbIndex >= 0) return host().call(name, payload, cbIndex, Comlink.proxy(args[cbIndex] as (...x: unknown[]) => unknown)) as Promise<unknown>;
+  return host().call(name, payload) as Promise<unknown>;
 }
 
 const special = {

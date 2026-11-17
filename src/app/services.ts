@@ -49,7 +49,7 @@ export function ensureForecasts(): Promise<void> {
 let pipeline: AskPipeline | null = null;
 export function askPipeline(): AskPipeline {
   pipeline ??= createAskPipeline({
-    db, llm: getProvider, today: todayISO, online: () => useApp.getState().online, golden: golden as GoldenItem[], ensureForecasts,
+    db, llm: getProvider, today: todayISO, online: () => useApp.getState().online && navigator.onLine !== false, golden: golden as GoldenItem[], ensureForecasts,
     settings: () => { const s = settings(); return { planModel: s.planModel, narrateModel: s.narrateModel, fallbackModel: s.fallbackModel, privacyMode: s.privacyMode, aiNarration: s.aiNarration, businessName: s.businessName }; },
   });
   return pipeline;

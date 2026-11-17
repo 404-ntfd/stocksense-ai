@@ -89,10 +89,12 @@ const ready: Promise<void> = (async () => {
 })();
 
 const host = {
-  async call(name: string, args: unknown[]): Promise<unknown> {
+  async call(name: string, args: unknown[], cbIndex?: number, cb?: (...a: unknown[]) => unknown): Promise<unknown> {
     await ready;
     const fn = (api as unknown as Record<string, (...a: unknown[]) => unknown>)[name];
     if (typeof fn !== 'function') throw new Error(`Unknown database call: ${name}`);
+    // Comlink only proxies top-level arguments, so a callback travels separately and is put back in place here
+    if (cbIndex != null && cb) { const a = [...args]; a[cbIndex] = cb; return fn(...a); }
     return fn(...args);
   },
   async flush(): Promise<void> { await ready; await flush(); },
