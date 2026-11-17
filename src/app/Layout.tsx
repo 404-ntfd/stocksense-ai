@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Boxes, Database, Home, Menu, Mic } from 'lucide-react';
+import { Boxes, Database, Home, Menu, Mic, Square } from 'lucide-react';
+import { useApp } from './store';
 import { cx } from './ui';
 import { Toasts } from './Toasts';
 
@@ -15,6 +16,8 @@ export function Layout() {
   const nav = useNavigate();
   const loc = useLocation();
   const onAsk = loc.pathname.startsWith('/ask');
+  const micLive = useApp((s) => s.micLive);
+  const isActive = (to: string, end?: boolean): boolean => (end ? loc.pathname === to : loc.pathname.startsWith(to) || (to === '/more' && (loc.pathname.startsWith('/settings') || loc.pathname.startsWith('/insights'))));
   return (
     <div className="h-full flex flex-col md:flex-row" style={{ paddingTop: 'var(--sat)', paddingLeft: 'var(--sal)', paddingRight: 'var(--sar)' }}>
       {/* Side rail on wide screens (Windows / tablets) */}
@@ -25,7 +28,7 @@ export function Layout() {
         </div>
         {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} end={t.end} data-testid={`rail-${t.label.toLowerCase()}`}
-            className={({ isActive }) => cx('flex items-center gap-3 min-h-12 px-3 rounded-xl font-medium', isActive ? 'bg-accent-soft text-accent' : 'text-muted hover:bg-surface2')}>
+            className={() => cx('flex items-center gap-3 min-h-12 px-3 rounded-xl font-medium', isActive(t.to, t.end) ? 'bg-accent-soft text-accent' : 'text-muted hover:bg-surface2')}>
             <t.icon className="size-5" aria-hidden /> {t.label}
           </NavLink>
         ))}
@@ -43,14 +46,15 @@ export function Layout() {
           {tabs.map((t) =>
             t.centre ? (
               <div key={t.to} className="flex justify-center">
-                <button type="button" aria-label="Ask by voice or text" data-testid="tab-ask" onClick={() => nav('/ask')}
-                  className={cx('-mt-7 size-16 rounded-full flex items-center justify-center shadow-lg border-4 border-bg', onAsk ? 'bg-ink text-bg' : 'bg-accent text-accent-ink')}>
-                  <Mic className="size-7" aria-hidden />
+                <button type="button" aria-label={onAsk ? (micLive ? 'Stop listening' : 'Start voice input') : 'Ask by voice or text'} data-testid={onAsk ? 'mic' : 'tab-ask'}
+                  onClick={() => (onAsk ? window.dispatchEvent(new Event('stocksense:mic')) : nav('/ask'))}
+                  className={cx('-mt-7 size-16 rounded-full flex items-center justify-center shadow-lg border-4 border-bg', micLive ? 'bg-neg text-white mic-live' : 'bg-accent text-accent-ink')}>
+                  {micLive ? <Square className="size-6" aria-hidden /> : <Mic className="size-7" aria-hidden />}
                 </button>
               </div>
             ) : (
               <NavLink key={t.to} to={t.to} end={t.end} data-testid={`tab-${t.label.toLowerCase()}`}
-                className={({ isActive }) => cx('flex flex-col items-center justify-center gap-0.5 h-16 text-xs font-medium', isActive ? 'text-accent' : 'text-muted')}>
+                className={() => cx('flex flex-col items-center justify-center gap-0.5 h-16 text-xs font-medium', isActive(t.to, t.end) ? 'text-accent' : 'text-muted')}>
                 <t.icon className="size-6" aria-hidden />
                 {t.label}
               </NavLink>

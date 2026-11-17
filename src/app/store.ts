@@ -11,6 +11,9 @@ interface AppState {
   forecastVersion: number;
   bumpForecast: () => void;
   online: boolean;
+  /** True while the Ask screen is listening (the centre nav button doubles as the mic there). */
+  micLive: boolean;
+  setMicLive: (v: boolean) => void;
   toasts: Toast[];
   setDbReady: (ok: boolean, err?: string | null) => void;
   bumpData: () => void;
@@ -28,6 +31,8 @@ export const useApp = create<AppState>((set, get) => ({
   bumpForecast: () => set({ forecastVersion: get().forecastVersion + 1 }),
   online: typeof navigator === 'undefined' ? true : navigator.onLine !== false,
   toasts: [],
+  micLive: false,
+  setMicLive: (v) => set({ micLive: v }),
   setDbReady: (ok, err = null) => set({ dbReady: ok, dbError: err }),
   bumpData: () => set({ dataVersion: get().dataVersion + 1 }),
   setOnline: (v) => set({ online: v }),

@@ -170,7 +170,7 @@ export function forecastChart(t: ChartTheme, d: ForecastChartData): EChartsCoreO
   const band = 1.28 * d.sigma;
   const lower = d.daily.map((v) => Math.max(0, Math.round((v - band) * 100) / 100));
   const width = d.daily.map((v, i) => Math.round((v + band - lower[i]) * 100) / 100);
-  const marks: unknown[] = [{ xAxis: d.today, label: { formatter: 'Today', color: t.muted, fontSize: 11 }, lineStyle: { color: t.muted, type: 'solid', width: 1 } }];
+  const marks: unknown[] = [{ xAxis: d.today, label: { show: false }, lineStyle: { color: t.muted, type: 'solid', width: 1 } }];
   if (d.stockout && x.includes(d.stockout) && d.stockout !== d.today) marks.push({ xAxis: d.stockout, label: { formatter: 'Stock runs out', color: t.status.out, fontSize: 11 }, lineStyle: { color: t.status.out, type: 'dashed', width: 2 } });
   return {
     ...common(t, true),

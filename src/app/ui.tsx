@@ -8,7 +8,7 @@ export function Card({ className, children, onClick, testId, label }: { classNam
   const base = 'rounded-2xl bg-surface border border-line p-4';
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} data-testid={testId} aria-label={label} className={cx(base, 'text-left w-full active:bg-surface2 transition-colors', className)}>
+      <button type="button" onClick={onClick} data-testid={testId} aria-label={label} className={cx(base, 'text-left w-full flex flex-col justify-start items-stretch active:bg-surface2 transition-colors', className)}>
         {children}
       </button>
     );
