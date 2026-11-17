@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { Capacitor, SystemBars, SystemBarsStyle } from '@capacitor/core';
 import { PROVIDER_DEFAULTS } from '@/core/ai/types';
 
 export type ProviderId = 'groq' | 'gemini';
@@ -61,4 +62,6 @@ export function applyTheme(theme: Settings['theme']): void {
   const dark = theme === 'dark' || (theme === 'system' && typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.classList.toggle('dark', dark);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b0f14' : '#0f766e');
+  // Android draws the app edge to edge: keep status/navigation bar icons readable on the app background.
+  if (Capacitor.isNativePlatform()) void SystemBars.setStyle({ style: dark ? SystemBarsStyle.Dark : SystemBarsStyle.Light }).catch(() => {});
 }

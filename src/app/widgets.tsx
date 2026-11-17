@@ -37,7 +37,8 @@ export function KpiCard({ label, value, sub, delta, goodWhenUp, onClick, onExpla
     <div className="relative" {...press}>
       <Card onClick={onClick} testId={testId} label={`${label}: ${value}`} className="h-full !p-3.5">
         <p className="text-sm text-muted pr-7">{label}</p>
-        <p className={cx('text-[28px] leading-9 font-bold num mt-0.5 truncate', tone === 'neg' && 'text-neg', tone === 'warn' && 'text-warn')} data-testid={testId ? `${testId}-value` : undefined}>{value}</p>
+        <p className={cx('leading-9 font-bold num mt-0.5 truncate', tone === 'neg' && 'text-neg', tone === 'warn' && 'text-warn')} data-testid={testId ? `${testId}-value` : undefined}
+          style={{ fontSize: value.length <= 7 ? 28 : `min(28px, calc((50vw - 50px) / ${(value.length * 0.62).toFixed(2)}))` }}>{value}</p>
         <div className="mt-1 min-h-5 flex items-center gap-2 flex-wrap">
           {delta !== undefined && <Delta pct={delta} goodWhenUp={goodWhenUp} />}
           {sub && <span className="text-sm text-muted">{sub}</span>}
