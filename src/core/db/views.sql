@@ -49,6 +49,9 @@ SELECT s.sale_date,
             WHEN 0 THEN 'Sunday' WHEN 1 THEN 'Monday' WHEN 2 THEN 'Tuesday' WHEN 3 THEN 'Wednesday'
             WHEN 4 THEN 'Thursday' WHEN 5 THEN 'Friday' ELSE 'Saturday' END AS weekday,
        s.invoice_no, p.sku, p.name AS product_name, p.category, c.name AS customer_name, s.qty,
+       s.unit_price_paise / 100.0 AS unit_price,
+       s.discount_paise / 100.0 AS discount,
+       s.tax_paise / 100.0 AS tax,
        ROUND((s.qty * s.unit_price_paise - s.discount_paise) / 100.0, 2) AS revenue,
        ROUND(s.qty * COALESCE(s.unit_cost_paise, p.cost_paise) / 100.0, 2) AS cogs,
        ROUND((s.qty * s.unit_price_paise - s.discount_paise) / 100.0, 2)
